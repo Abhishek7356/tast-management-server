@@ -49,7 +49,7 @@ export const getAllTasks = async (filters) => {
             params
         );
 
-        const [task] = await db.execute(
+        const [tasks] = await db.execute(
             `
             SELECT 
                 tasks.*,
