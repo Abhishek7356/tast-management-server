@@ -49,7 +49,7 @@ export const updateTasksController = async (req, res) => {
     try {
         const result = await update(req.params.id, req.body, req.user)
 
-        res.status(201).json({
+        res.status(200).json({
             success: true,
             message: "task updated successfully",
             data: result
@@ -67,7 +67,7 @@ export const deleteTasksController = async (req, res) => {
     try {
         const result = await removeTask(req.params.id, req.user)
 
-        res.status(201).json({
+        res.status(200).json({
             success: true,
             message: "task deleted successfully",
             data: result

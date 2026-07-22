@@ -57,11 +57,19 @@ export const getTasks = async (user, query) => {
 export const update = async (id, data, user) => {
     try {
 
+        let result;
+
         if (user.role == "admin") {
-            return await updateTask(id, data)
+            result = await updateTask(id, data);
+        } else {
+            result = await updateOwnTask(id, user.id, data);
         }
 
-        return await updateOwnTask(id, user.id, data)
+        if (result === 0) {
+            throw new Error("You cannot update this task");
+        }
+
+        return result;
     } catch (error) {
         console.error(error)
         throw new Error(error.message)
@@ -71,11 +79,19 @@ export const update = async (id, data, user) => {
 export const removeTask = async (id, user) => {
     try {
 
+        let result;
+
         if (user.role == "admin") {
-            return await deleteTask(id)
+            result = await deleteTask(id);
+        } else {
+            result = await deleteOwnTask(id, user.id);
         }
 
-        return await deleteOwnTask(id, user.id)
+        if (result === 0) {
+            throw new Error("You cannot delete this task");
+        }
+
+        return result;
     } catch (error) {
         console.error(error)
         throw new Error(error.message)
