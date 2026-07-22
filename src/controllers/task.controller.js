@@ -33,7 +33,7 @@ export const getAllTasksController = async (req, res) => {
                 page,
                 limit,
                 total: result.total,
-                totalPages: Math.ceil(result.total / limit),
+                totalPages: Math.max(1, Math.ceil(result.total / limit)),
             },
         });
 
