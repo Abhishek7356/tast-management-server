@@ -22,14 +22,32 @@ export const create = async (data, user) => {
 }
 
 
-export const getTasks = async (user) => {
+export const getTasks = async (user, query) => {
     try {
-
+        const {
+            page = 1,
+            limit = 10,
+            search = "",
+            status = ""
+        } = query;
         if (user.role == "admin") {
-            return await getAllTasks()
+            return await getAllTasks({
+                page,
+                limit,
+                search,
+                status
+            })
         }
 
-        return await getTaskByUser(user.id)
+        return await getTaskByUser(
+            user.id,
+            {
+                page,
+                limit,
+                search,
+                status
+            }
+        )
     } catch (error) {
         console.error(error)
         throw new Error(error.message)

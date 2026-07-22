@@ -15,33 +15,107 @@ export const createTask = async (data) => {
     }
 }
 
-export const getAllTasks = async () => {
+export const getAllTasks = async (filters) => {
     try {
+
+        const {
+            page = 1,
+            limit = 10,
+            search,
+            status
+        } = filters;
+
+        const offset = (Number(page) - 1) * Number(limit);
+
+        let query = "WHERE 1=1";
+
+        const params = [];
+
+        if (search) {
+            query += " AND tasks.title LIKE ?";
+            params.push(`%${search}%`);
+        }
+        if (status) {
+            query += " AND tasks.status = ?";
+            params.push(status);
+        }
+
+        const [countRows] = await db.execute(
+            `
+            SELECT COUNT(*) AS total
+            FROM tasks
+            ${query}
+            `,
+            params
+        );
+
         const [task] = await db.execute(
             `
             SELECT 
-            tasks.*,
-            users.name AS user_name
+                tasks.*,
+                users.name AS user_name
             FROM tasks
             JOIN users
-            ON tasks.user_id = users.id
+                ON tasks.user_id = users.id
+            ${query}
             ORDER BY tasks.created_at DESC
-            `
+            LIMIT ?
+            OFFSET ?
+            `,
+            [...params, Number(limit), offset]
         )
-        return tasks
+        return { tasks, total: countRows[0].total }
     } catch (error) {
         throw new Error(error.message)
     }
 }
 
-export const getTaskByUser = async (userId) => {
+export const getTaskByUser = async (userId, filters) => {
     try {
+        const {
+            page = 1,
+            limit = 10,
+            search = "",
+            status = ""
+        } = filters;
+        const offset = (Number(page) - 1) * Number(limit);
+
+        let query = "WHERE tasks.user_id = ?";
+        const params = [userId];
+
+        if (search) {
+            query += " AND tasks.title LIKE ?";
+            params.push(`%${search}%`);
+        }
+
+        if (status) {
+            query += " AND tasks.status = ?";
+            params.push(status);
+        }
+
+        const [countRows] = await db.execute(
+            `
+            SELECT COUNT(*) AS total
+            FROM tasks
+            ${query}
+            `,
+            params
+        );
 
         const [tasks] = await db.execute(
-            `SELECT * FROM tasks WHERE user_id = ? ORDER BY created_at DESC`,
-            [userId]
+            `SELECT * 
+                FROM tasks 
+            ${query}
+            ORDER BY created_at DESC
+            LIMIT ?
+            OFFSET ?
+            `,
+            [...params, Number(limit), offset]
         )
-        return tasks
+        return {
+            tasks,
+            total: countRows[0].total
+        };
     } catch (error) {
         throw new Error(error.message)
     }
