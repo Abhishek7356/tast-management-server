@@ -121,19 +121,6 @@ export const getTaskByUser = async (userId, filters) => {
     }
 }
 
-export const getTaskById = async (id) => {
-    try {
-
-        const [tasks] = await db.execute(
-            `SELECT * FROM tasks WHERE id = ?`,
-            [id]
-        )
-        return tasks[0]
-    } catch (error) {
-        throw new Error(error.message)
-    }
-}
-
 export const updateTask = async (id, task) => {
     console.log(id, task)
     try {
@@ -191,6 +178,7 @@ export const deleteOwnTask = async (id, userId) => {
         )
         return result.affectedRows
     } catch (error) {
+        console.log(error)
         throw new Error(error.message)
     }
 }
