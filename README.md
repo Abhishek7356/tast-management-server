@@ -2,6 +2,7 @@
 
 ## Project Setup
 
+## Install dependencies:
 
 npm install
 
