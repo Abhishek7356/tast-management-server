@@ -2,8 +2,9 @@ import { createUser, findUserByEmail } from "../models/User.js";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/generateToken.js";
 
+export const AuthService = {}
 
-export const registeUser = async (data) => {
+AuthService.registeUser = async (data) => {
     const { name, email, password } = data;
     const existingUser = await findUserByEmail(email)
 
@@ -24,7 +25,7 @@ export const registeUser = async (data) => {
     };
 }
 
-export const loginUser = async (data) => {
+AuthService.loginUser = async (data) => {
     const { email, password } = data;
     const existingUser = await findUserByEmail(email)
 

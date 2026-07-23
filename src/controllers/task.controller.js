@@ -1,9 +1,10 @@
-import { create, getTasks, removeTask, update } from "../services/task.service.js";
+import { TaskService } from "../services/task.service.js";
+
 
 
 export const createTaskController = async (req, res) => {
     try {
-        const result = await create(req.body, req.user)
+        const result = await TaskService.create(req.body, req.user)
 
         res.status(201).json({
             success: true,
@@ -21,7 +22,7 @@ export const createTaskController = async (req, res) => {
 
 export const getAllTasksController = async (req, res) => {
     try {
-        const result = await getTasks(req.user, req.query)
+        const result = await TaskService.getTasks(req.user, req.query)
         const page = Number(req.query.page) || 1;
         const limit = Number(req.query.limit) || 5;
 
@@ -46,7 +47,7 @@ export const getAllTasksController = async (req, res) => {
 
 export const updateTasksController = async (req, res) => {
     try {
-        const result = await update(req.params.id, req.body, req.user)
+        const result = await TaskService.update(req.params.id, req.body, req.user)
 
         res.status(200).json({
             success: true,
@@ -69,7 +70,7 @@ export const updateTasksController = async (req, res) => {
 
 export const deleteTasksController = async (req, res) => {
     try {
-        const result = await removeTask(req.params.id, req.user)
+        const result = await TaskService.removeTask(req.params.id, req.user)
 
         res.status(200).json({
             success: true,

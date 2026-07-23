@@ -9,7 +9,9 @@ import {
 } from "../models/Task.js";
 
 
-export const create = async (data, user) => {
+export const TaskService = {}
+
+TaskService.create = async (data, user) => {
 
     const taskId = await createTask({ ...data, userId: user.id })
 
@@ -18,7 +20,7 @@ export const create = async (data, user) => {
 }
 
 
-export const getTasks = async (user, query) => {
+TaskService.getTasks = async (user, query) => {
     const {
         page = 1,
         limit = 10,
@@ -45,7 +47,7 @@ export const getTasks = async (user, query) => {
     )
 }
 
-export const update = async (id, data, user) => {
+TaskService.update = async (id, data, user) => {
 
 
     let result;
@@ -64,7 +66,7 @@ export const update = async (id, data, user) => {
 
 }
 
-export const removeTask = async (id, user) => {
+TaskService.removeTask = async (id, user) => {
 
     let result;
 
