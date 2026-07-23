@@ -1,6 +1,7 @@
 import { createUser, findUserByEmail } from "../models/User.js";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/generateToken.js";
+import AppError from "../utils/AppError.js";
 
 export const AuthService = {}
 
@@ -9,7 +10,7 @@ AuthService.registeUser = async (data) => {
     const existingUser = await findUserByEmail(email)
 
     if (existingUser) {
-        throw new Error("Email already exist");
+        throw new AppError("Email already exist", 409);
     }
     const role = "user"
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -30,13 +31,13 @@ AuthService.loginUser = async (data) => {
     const existingUser = await findUserByEmail(email)
 
     if (!existingUser) {
-        throw new Error("Invalid email or password");
+        throw new AppError("Invalid email or password", 401);
     }
 
     const isMatch = await bcrypt.compare(password, existingUser.password);
 
     if (!isMatch) {
-        throw new Error("Invalid email or password");
+        throw new AppError("Invalid email or password", 401);
     }
 
     const token = generateToken(existingUser.id, existingUser.role)

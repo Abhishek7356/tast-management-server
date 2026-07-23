@@ -1,92 +1,52 @@
 import { TaskService } from "../services/task.service.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 
 
-export const createTaskController = async (req, res) => {
-    try {
-        const result = await TaskService.create(req.body, req.user)
+export const createTaskController = asyncHandler(async (req, res) => {
+    const result = await TaskService.create(req.body, req.user)
 
-        res.status(201).json({
-            success: true,
-            message: "task created successfully",
-            data: result
-        });
+    res.status(201).json({
+        success: true,
+        message: "task created successfully",
+        data: result
+    });
 
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: error.message
-        });
-    }
-}
+})
 
-export const getAllTasksController = async (req, res) => {
-    try {
-        const result = await TaskService.getTasks(req.user, req.query)
-        const page = Number(req.query.page) || 1;
-        const limit = Number(req.query.limit) || 5;
+export const getAllTasksController = asyncHandler(async (req, res) => {
+    const result = await TaskService.getTasks(req.user, req.query)
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 5;
 
-        res.status(200).json({
-            success: true,
-            data: result.tasks,
-            pagination: {
-                page,
-                limit,
-                total: result.total,
-                totalPages: Math.max(1, Math.ceil(result.total / limit)),
-            },
-        });
+    res.status(200).json({
+        success: true,
+        data: result.tasks,
+        pagination: {
+            page,
+            limit,
+            total: result.total,
+            totalPages: Math.max(1, Math.ceil(result.total / limit)),
+        },
+    });
+})
 
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: error.message
-        });
-    }
-}
+export const updateTasksController = asyncHandler(async (req, res) => {
+    const result = await TaskService.update(req.params.id, req.body, req.user)
 
-export const updateTasksController = async (req, res) => {
-    try {
-        const result = await TaskService.update(req.params.id, req.body, req.user)
+    res.status(200).json({
+        success: true,
+        message: "task updated successfully",
+        data: result
+    });
+})
 
-        res.status(200).json({
-            success: true,
-            message: "task updated successfully",
-            data: result
-        });
+export const deleteTasksController = asyncHandler(async (req, res) => {
+    const result = await TaskService.removeTask(req.params.id, req.user)
 
-    } catch (error) {
-        let status = 500;
-
-        if (error.message === "Task not found or access denied") {
-            status = 403;
-        }
-        res.status(status).json({
-            success: false,
-            message: error.message
-        });
-    }
-}
-
-export const deleteTasksController = async (req, res) => {
-    try {
-        const result = await TaskService.removeTask(req.params.id, req.user)
-
-        res.status(200).json({
-            success: true,
-            message: "task deleted successfully",
-            data: result
-        });
-
-    } catch (error) {
-        let status = 500;
-
-        if (error.message === "Task not found or access denied") {
-            status = 403;
-        }
-        res.status(status).json({
-            success: false,
-            message: error.message
-        });
-    }
-}
+    res.status(200).json({
+        success: true,
+        message: "task deleted successfully",
+        data: result
+    });
+})

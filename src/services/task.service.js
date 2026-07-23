@@ -7,6 +7,7 @@ import {
     updateOwnTask,
     updateTask
 } from "../models/Task.js";
+import AppError from "../utils/AppError.js";
 
 
 export const TaskService = {}
@@ -59,7 +60,7 @@ TaskService.update = async (id, data, user) => {
     }
 
     if (result === 0) {
-        throw new Error("Task not found or access denied");
+        throw new AppError("Task not found or access denied", 403);
     }
 
     return result;
@@ -77,7 +78,7 @@ TaskService.removeTask = async (id, user) => {
     }
 
     if (result === 0) {
-        throw new Error("Task not found or access denied");
+        throw new AppError("Task not found or access denied", 403);
     }
 
     return result;

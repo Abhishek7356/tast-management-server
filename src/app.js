@@ -19,4 +19,15 @@ app.get("/health", (req, res) => {
 app.use("/api/auth", authRoutes)
 app.use("/api/tasks", taskRoutes)
 
+app.use((err, req, res, next) => {
+
+    console.error(err);
+
+    res.status(err.statusCode || 500).json({
+        success: false,
+        message: err.message || "Internal server error"
+    });
+
+});
+
 export default app
