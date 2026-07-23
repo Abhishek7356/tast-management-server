@@ -12,9 +12,12 @@ export const register = async (req, res) => {
         });
 
     } catch (error) {
-        res.status(400).json({
+        const status =
+            error.message === "Email already exists" ? 409 : 500;
+
+        res.status(status).json({
             success: false,
-            message: error.message
+            message: error.message,
         });
     }
 }
@@ -23,16 +26,19 @@ export const login = async (req, res) => {
     try {
         const result = await loginUser(req.body)
 
-        res.status(201).json({
+        res.status(200).json({
             success: true,
             message: "User logged in successfully",
             user: result
         });
 
     } catch (error) {
-        res.status(400).json({
+        const status =
+            error.message === "Invalid email or password" ? 401 : 500;
+
+        res.status(status).json({
             success: false,
-            message: error.message
+            message: error.message,
         });
     }
 }

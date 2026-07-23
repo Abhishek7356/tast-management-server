@@ -1,4 +1,3 @@
-import { loginUser, registeUser } from "../services/auth.service.js";
 import { create, getTasks, removeTask, update } from "../services/task.service.js";
 
 
@@ -56,7 +55,12 @@ export const updateTasksController = async (req, res) => {
         });
 
     } catch (error) {
-        res.status(400).json({
+        let status = 500;
+
+        if (error.message === "Task not found or access denied") {
+            status = 403;
+        }
+        res.status(status).json({
             success: false,
             message: error.message
         });
@@ -74,7 +78,12 @@ export const deleteTasksController = async (req, res) => {
         });
 
     } catch (error) {
-        res.status(400).json({
+        let status = 500;
+
+        if (error.message === "Task not found or access denied") {
+            status = 403;
+        }
+        res.status(status).json({
             success: false,
             message: error.message
         });
